@@ -1,0 +1,119 @@
+
+
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+
+/**
+ * The main class that manages the whole game (sets up, updates and draws everything).
+ */
+public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
+    private MainThread thread;
+
+    /**
+     * Says where in the app the player is (menu, game, etc.).
+     * Leave 0 free as the "test state".
+     */
+    private int state;
+    private static final int STATE_PLAYING=1;
+
+    private GameMode match;
+
+
+
+
+    public GamePanel(Context context){
+        super(context);
+        getHolder().addCallback(this);
+        thread=new MainThread(getHolder(), this);
+        setFocusable(true);
+
+        //here be setup
+        state=STATE_PLAYING;                                            //TEMP
+        match=new GMBouncer();                                          //TEMP
+        DataBank.setGameField(new Rect(0,0,Constants.screenWidth,Constants.screenHeight)); //TEMP
+        DataBank.setUnit(Constants.screenWidth/720);                    //TEMP
+
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height){
+
+    }
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder){
+        thread=new MainThread(getHolder(), this);
+        thread.setRunning(true);
+        thread.start();
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder){
+        boolean retry = true;
+        while(true){
+            try{
+                thread.setRunning(false);
+                thread.join();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            retry = false;
+        }
+
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event){
+
+        switch(event.getAction()){
+            case MotionEvent.ACTION_DOWN:
+                mouseDown();
+            case MotionEvent.ACTION_MOVE:
+                //mouseMove();
+            case MotionEvent.ACTION_UP:
+                mouseUp();
+
+        }
+
+        return true;
+        //return super.onTouchEvent(event);
+    }
+
+    public void update(){
+        if(state==STATE_PLAYING){
+            match.update();
+        }
+    }
+
+    @Override
+    public void draw(Canvas canvas){
+        super.draw(canvas);
+
+        if(state==STATE_PLAYING){
+            match.draw(canvas);
+        }
+
+
+
+    }
+
+    void mouseDown(){
+        if(state==STATE_PLAYING){
+            match.mouseDown();
+        }
+    }
+//    void mouseMove(){
+//
+//    }
+    void mouseUp(){
+        if(state==STATE_PLAYING){
+            match.mouseUp();
+        }
+    }
+
+
+}
