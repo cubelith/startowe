@@ -1,0 +1,87 @@
+package com.example.kuba.repulsev001;
+
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
+
+/**
+ * The basic player class in Repulse.
+ * This class displays and moves the player, and also manages all other actions connected to them,
+ * such as checking collisions or shooting.
+ *
+ * @author Kuba
+ */
+
+public class Player implements GameObject{
+
+
+    private boolean alive;
+    /**
+     * Position and speed coordinates
+     */
+    private float x,y,vx,vy;
+    private float radius;
+    private Rect gameField;
+    private int cooldown,cooldownTime;
+    private float gravity;
+
+    /**
+     * Strength of recoil and the speed of bullets
+     */
+    private float recoilSpeed,bulletSpeed;
+    private float bulletRadius;
+    private float bulletGravity;
+
+
+    public Player(float x,float y,float radius,int cooldownTime,float gravity){
+        this.alive=true;
+        this.x=x;
+        this.y=y;
+        vx=0;
+        vy=0;
+        this.gameField=DataBank.getGameField();
+        this.radius=radius;
+        this.cooldown=0;
+        this.cooldownTime=cooldownTime;
+        this.gravity=gravity;
+    }
+
+    public void setShotParams(float recoilSpeed,float bulletSpeed,float bulletRadius,float bulletGravity){
+        this.recoilSpeed=recoilSpeed;
+        this.bulletSpeed=bulletSpeed;
+        this.bulletRadius=bulletRadius;
+        this.bulletGravity=bulletGravity;
+    }
+
+
+    /**
+     * Displays the player.
+     *
+     * @param canvas     <code>Canvas</code> to draw on
+     */
+    @Override
+    public void draw(Canvas canvas) {
+        Paint paint = new Paint();
+
+        paint.setColor(Color.rgb(0,0,255));
+        canvas.drawCircle(x,y,radius,paint);
+        paint.setColor(Color.rgb(0,0,255));
+        canvas.drawArc(new RectF(x-radius,y-radius,x+radius,y+radius),-90,360*(1-cooldown/cooldownTime),true, paint); //could be funny with false
+        paint.setColor(Color.rgb(255,0,127));
+        canvas.drawCircle(x,y,radius/2,paint);
+    }
+
+    /**
+     * Updates the player's state by one frame
+     * Returns true if alive
+     */
+    @Override
+    public void update() {
+        vy+=gravity;
+
+        x+=vx;
+        y+=vy;
+    }
+}
