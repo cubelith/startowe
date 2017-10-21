@@ -1,0 +1,105 @@
+
+import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.provider.ContactsContract;
+
+import java.util.ArrayList;
+
+/**
+ * The first game mode, with bullets bouncing of the walls and nothing more.
+ * In the basic version you may not touch the walls or be hit by a bullet,
+ * and the score is the number of bullets shot before death.
+ */
+
+public class GMBouncer implements GameMode {
+
+    private Player player;
+    private ArrayList<Bullet> bullets;
+    private int bulletsShot;
+    /**
+     * States approximatelly how long a bullet stays on the screen.
+     * The formula for the amount of bullets on screen is:
+     * bulletsOnScreen=bulletsShot^bulletLifetime
+     * So this may not be less than 0 or greater than 1.
+     */
+    private float bulletLifetime;
+
+    /**
+     * Whether walls/bullets should kill the player or not.
+     * Setting bulletsKill to false makes sense only for debugging.
+     */
+    private boolean wallsKill,bulletsKill;
+
+    private float unit;
+
+    private Rect gameField;
+
+
+    /**
+     * For now, initialises a default game
+     */
+    public GMBouncer(){
+        //initialisation
+        unit = DataBank.getUnit();
+        gameField= DataBank.getGameField();
+
+        wallsKill = true;
+        bulletsKill = true;
+
+        bulletLifetime = (float)0.75;      //TEMP
+        resetMatch();
+    }
+
+    /**
+     * This may later be removed, we'll see. It resets the positions etc. to starting values
+     */
+    public void resetMatch(){
+        player = new Player(Constants.screenWidth/2,Constants.screenHeight/2,22*unit,25,0*unit);              //TEMP
+        player.setShotParams(5*unit,10*unit,7*unit,0*unit);                     //TEMP
+
+        bullets=new ArrayList<Bullet>(1);
+        bullets.set(0,new Bullet());
+
+        bulletsShot=0;
+    }
+
+    /**
+     * Updates the match by one frame
+     */
+    public void update() {
+
+    }
+
+    /**
+     * Draws the match on the canvas
+     *
+     * @param canvas the canvas to draw on
+     */
+    public void draw(Canvas canvas) {
+        player.draw(canvas);
+    }
+
+    /**
+     * Returns the score achieved in the match so far.
+     * Should mostly be used after death.
+     * @return the score
+     */
+    public int getScore() {
+        return bulletsShot;
+    }
+
+    /**
+     * Called on a click (just at the moment of touching the screen)
+     */
+    public void mouseDown(){
+
+    }
+
+    /**
+     * Called after releasing the finger
+     */
+    public void mouseUp() {
+
+    }
+
+}
