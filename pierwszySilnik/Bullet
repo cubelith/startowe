@@ -1,0 +1,64 @@
+
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+
+/**
+ * here be javadoc
+ */
+
+public class Bullet implements GameObject {
+
+    /**
+     * Says whether the bullet actually exists
+     */
+    private boolean alive;
+
+    private float x,y,vx,vy;
+    private float radius;
+
+    /**
+     * If true, the bullet doesn't kill the player.
+     * Stays true until the bullet gets outside of the player for the first time.
+     */
+    private boolean inPlayer;
+
+    /**
+     * Initialises a non-existent bullet
+     */
+    public Bullet(){
+        alive=false;
+    }
+
+    public Bullet(float x,float y,float vx,float vy,float radius){
+        alive=true;
+        inPlayer=true;
+        this.x=x;
+        this.y=y;
+        this.vx=vx;
+        this.vy=vy;
+        this.radius=radius;
+    }
+
+    /**
+     * Draws the object on a given Canvas
+     *
+     * @param canvas
+     */
+    @Override
+    public void draw(Canvas canvas) {
+        Paint paint = new Paint();
+
+        paint.setColor(Color.rgb(255,191,0));
+        canvas.drawCircle(x,y,radius,paint);
+    }
+
+    /**
+     * Updates the object's state by one frame
+     * Returns true if alive
+     */
+    @Override
+    public void update() {
+
+    }
+}
